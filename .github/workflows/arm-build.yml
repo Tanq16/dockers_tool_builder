@@ -36,7 +36,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: tool_docker
-          file: security_docker/Dockerfile
+          file: tool_docker/Dockerfile
           platforms: linux/arm64
           push: true
           tags: tanq16/tool_docker:main_apple
