@@ -67,7 +67,7 @@ RUN git clone --depth=1 https://github.com/tomnomnom/httprobe && \
 
 FROM alpine
 RUN mkdir /executables
-COPY --from=go_builder /executables/* /opt/executables/
-COPY --from=projectdiscovery_builder /executables/* /opt/executables/
-COPY --from=hakluke_builder /executables/* /opt/executables/
-COPY --from=tomnomnom_builder /executables/* /opt/executables/
+COPY --from=go_builder /executables/* /executables/
+COPY --from=projectdiscovery_builder /executables/* /executables/
+COPY --from=hakluke_builder /executables/* /executables/
+COPY --from=tomnomnom_builder /executables/* /executables/
