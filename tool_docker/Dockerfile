@@ -18,6 +18,8 @@ RUN git clone --depth=1 https://github.com/OWASP/amass.git && \
     cd amass/cmd/amass && go get && go build && mv amass /executables
 RUN git clone --depth=1 https://github.com/j3ssie/metabigor && \
     cd metabigor && go get && go build && mv metabigor /executables
+RUN git clone --depth=1 https://github.com/lc/gau && \
+    cd gau/cmd/gau && go get && go build -o getallurls && mv getallurls /executables
 
 FROM golang AS projectdiscovery_builder
 RUN mkdir /executables
