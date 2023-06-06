@@ -61,8 +61,8 @@ RUN git clone --depth=1 https://github.com/tomnomnom/assetfinder && \
 RUN git clone --depth=1 https://github.com/tomnomnom/httprobe && \
     cd httprobe && go get && go build && mv httprobe /executables
 
-FROM golang AS nvim_builder
-RUN mkdir /debs && \
+FROM ubuntu AS nvim_builder
+RUN mkdir /debs && apt install -y ninja-build gettext cmake unzip curl \
     git clone --depth=1 https://github.com/neovim/neovim && \
     cd neovim && make CMAKE_BUILD_TYPE=RelWithDebInfo && \
     cd build && cpack -G DEB && \
