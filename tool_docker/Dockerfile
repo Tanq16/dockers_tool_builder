@@ -62,7 +62,7 @@ RUN git clone --depth=1 https://github.com/tomnomnom/httprobe && \
     cd httprobe && go get && go build && mv httprobe /executables
 
 FROM ubuntu AS nvim_builder
-RUN mkdir /debs && apt install -y ninja-build gettext cmake unzip curl \
+RUN mkdir /debs && apt install -y ninja-build gettext cmake unzip curl && \
     git clone --depth=1 https://github.com/neovim/neovim && \
     cd neovim && make CMAKE_BUILD_TYPE=RelWithDebInfo && \
     cd build && cpack -G DEB && \
