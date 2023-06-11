@@ -33,7 +33,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: tool_docker
-          file: ./nvim-dockerfile
+          file: tool_docker/nvim-dockerfile
           push: false
           load: true
           platforms: linux/arm64
