@@ -25,27 +25,41 @@ jobs:
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+      
+      - name: Docker Login
+        uses: docker/login-action@v1.10.0
         with:
-          install: true
+          username: tanq16
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
-      - name: Build Docker image for ARM DEB
-        id: docker_build_arm
+      - name: Build and push nvim
         uses: docker/build-push-action@v2
         with:
           context: tool_docker
           file: tool_docker/nvim-dockerfile
-          push: false
-          load: true
           platforms: linux/arm64
+          push: true
+          tags: tanq16/tool_docker:nvim_apple
 
-      - name: Create .deb file
-        run: |
-          CONTAINER_ID=$(docker create ${{ steps.docker_build_arm.outputs.digest }})
-          docker cp ${CONTAINER_ID}:/nvim-linux64.deb ./nvim-linux64.deb
-          docker rm ${CONTAINER_ID}
+      # old docker image-extract method
+      # - name: Build Docker image for ARM DEB
+      #   id: docker_build_arm
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     context: tool_docker
+      #     file: tool_docker/nvim-dockerfile
+      #     push: false
+      #     load: true
+      #     platforms: linux/arm64
+
+      # - name: Create .deb file
+      #   run: |
+      #     CONTAINER_ID=$(docker create ${{ steps.docker_build_arm.outputs.digest }})
+      #     docker cp ${CONTAINER_ID}:/nvim-linux64.deb ./nvim-linux64.deb
+      #     docker rm ${CONTAINER_ID}
       
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: nvim-linux64.deb
-          tag_name: nvim-arm64
+      # - name: Release
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     files: nvim-linux64.deb
+      #     tag_name: nvim-arm64

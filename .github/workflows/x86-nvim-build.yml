@@ -20,19 +20,34 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up Neovim Build Dependencies
-        run: |
-          mkdir /debs && sudo apt update -y && sudo apt upgrade -y
-          sudo apt install -y ninja-build gettext cmake unzip curl git file
-          git clone --depth=1 https://github.com/neovim/neovim
-
-      - name: Build Neovim for amd64
-        run: |
-          cd neovim && make CMAKE_BUILD_TYPE=RelWithDebInfo
-          cd build && cpack -G DEB
-      
-      - name: Release
-        uses: softprops/action-gh-release@v1
+      - name: Docker Login
+        uses: docker/login-action@v1.10.0
         with:
-          files: neovim/build/nvim-linux64.deb
-          tag_name: nvim-amd64
+          username: tanq16
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+
+      - name: Build and push nvim
+        uses: docker/build-push-action@v2
+        with:
+          context: tool_docker
+          file: tool_docker/nvim-dockerfile
+          push: true
+          tags: tanq16/tool_docker:nvim
+
+      # Old release-based method
+      # - name: Set up Neovim Build Dependencies
+      #   run: |
+      #     mkdir /debs && sudo apt update -y && sudo apt upgrade -y
+      #     sudo apt install -y ninja-build gettext cmake unzip curl git file
+      #     git clone --depth=1 https://github.com/neovim/neovim
+
+      # - name: Build Neovim for amd64
+      #   run: |
+      #     cd neovim && make CMAKE_BUILD_TYPE=RelWithDebInfo
+      #     cd build && cpack -G DEB
+      
+      # - name: Release
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     files: neovim/build/nvim-linux64.deb
+      #     tag_name: nvim-amd64
