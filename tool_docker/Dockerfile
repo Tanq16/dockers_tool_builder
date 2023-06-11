@@ -61,14 +61,6 @@ RUN git clone --depth=1 https://github.com/tomnomnom/assetfinder && \
 RUN git clone --depth=1 https://github.com/tomnomnom/httprobe && \
     cd httprobe && go get && go build && mv httprobe /executables
 
-FROM ubuntu AS nvim_builder
-RUN mkdir /debs && apt update -y && apt upgrade -y && \
-    apt install -y ninja-build gettext cmake unzip curl git file && \
-    git clone --depth=1 https://github.com/neovim/neovim && \
-    cd neovim && make CMAKE_BUILD_TYPE=RelWithDebInfo && \
-    cd build && cpack -G DEB && \
-    mv *.deb /debs/
-
 # ============================================================================================================
 # ======================================================================= FINAL IMAGE Post Builder Stage =====
 # ============================================================================================================
@@ -79,4 +71,3 @@ COPY --from=go_builder /executables/* /executables/
 COPY --from=projectdiscovery_builder /executables/* /executables/
 COPY --from=hakluke_builder /executables/* /executables/
 COPY --from=tomnomnom_builder /executables/* /executables/
-COPY --from=nvim_builder /debs/* /debs/
