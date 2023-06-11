@@ -4,7 +4,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 0 2 * *'
+    - cron: '0 0 3 * *'
   workflow_dispatch:
     inputs:
       tags:
@@ -25,20 +25,27 @@ jobs:
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+        with:
+          install: true
 
-      - name: Set up Neovim Build Dependencies
-        run: |
-          mkdir /debs && sudo apt update -y && sudo apt upgrade -y
-          sudo apt install -y ninja-build gettext cmake unzip curl git file
-          git clone --depth=1 https://github.com/neovim/neovim
+      - name: Build Docker image for ARM DEB
+        id: docker_build_arm
+        uses: docker/build-push-action@v2
+        with:
+          context: tool_docker
+          file: ./nvim-dockerfile
+          push: false
+          load: true
+          platforms: linux/arm64
 
-      - name: Build Neovim for arm64
+      - name: Create .deb file
         run: |
-          cd neovim && make CMAKE_BUILD_TYPE=RelWithDebInfo
-          cd build && cpack -G DEB
+          CONTAINER_ID=$(docker create ${{ steps.docker_build_arm.outputs.digest }})
+          docker cp ${CONTAINER_ID}:/nvim-linux64.deb ./nvim-linux64.deb
+          docker rm ${CONTAINER_ID}
       
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: neovim/build/nvim-linux64.deb
+          files: nvim-linux64.deb
           tag_name: nvim-arm64
