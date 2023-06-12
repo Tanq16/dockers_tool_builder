@@ -61,6 +61,12 @@ RUN git clone --depth=1 https://github.com/tomnomnom/assetfinder && \
 RUN git clone --depth=1 https://github.com/tomnomnom/httprobe && \
     cd httprobe && go get && go build && mv httprobe /executables
 
+FROM rust AS noseyparker_builder
+RUN mkdir /executables && \
+    apt update -y && apt install -y cmake ninja-build git && apt clean
+RUN git clone --depth=1 https://github.com/praetorian-inc/noseyparker && \
+    cd noseyparker && cargo build --release && mv target/release/noseyparker /executables
+
 # ============================================================================================================
 # ======================================================================= FINAL IMAGE Post Builder Stage =====
 # ============================================================================================================
