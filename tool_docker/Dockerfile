@@ -77,3 +77,4 @@ COPY --from=go_builder /executables/* /executables/
 COPY --from=projectdiscovery_builder /executables/* /executables/
 COPY --from=hakluke_builder /executables/* /executables/
 COPY --from=tomnomnom_builder /executables/* /executables/
+COPY --from=noseyparker_builder /executables/* /executables/
