@@ -1,7 +1,8 @@
 FROM ubuntu
 RUN mkdir /debs && apt update -y && apt upgrade -y && \
-    apt install -y ninja-build gettext cmake unzip curl git file && \
-    git clone --depth=1 https://github.com/neovim/neovim && \
-    cd neovim && make CMAKE_BUILD_TYPE=RelWithDebInfo && \
+    apt install -y wget ninja-build gettext cmake unzip curl git file && \
+    wget https://github.com/neovim/neovim/archive/refs/tags/stable.tar.gz && \
+    tar -xvf stable.tar.gz && \
+    cd neovim-stable && make CMAKE_BUILD_TYPE=RelWithDebInfo && \
     cd build && cpack -G DEB
 RUN mv neovim/build/nvim-linux64.deb /

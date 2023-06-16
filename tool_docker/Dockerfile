@@ -43,7 +43,7 @@ RUN git clone --depth=1 https://github.com/projectdiscovery/cloudlist && \
 RUN git clone --depth=1 https://github.com/projectdiscovery/uncover && \
     cd uncover/cmd/uncover && go get && go build && mv uncover /executables
 
-FROM golang AS hakluke_builder
+FROM golang AS other_builder
 RUN mkdir /executables
 RUN git clone --depth=1 https://github.com/hakluke/hakrawler && \
     cd hakrawler && go get && go build && mv hakrawler /executables
@@ -51,15 +51,14 @@ RUN git clone --depth=1 https://github.com/hakluke/hakrevdns && \
     cd hakrevdns && go mod init hakrevdns && go mod tidy && go get && go build && mv hakrevdns /executables
 RUN git clone --depth=1 https://github.com/hakluke/haktldextract && \
     cd haktldextract && go get && go build && mv haktldextract /executables
-
-FROM golang AS tomnomnom_builder
-RUN mkdir /executables
 RUN git clone --depth=1 https://github.com/tomnomnom/gron && \
     cd gron && go get && go build && mv gron /executables
 RUN git clone --depth=1 https://github.com/tomnomnom/assetfinder && \
     cd assetfinder && go mod init assetfinder && go mod tidy && go get && go build && mv assetfinder /executables
 RUN git clone --depth=1 https://github.com/tomnomnom/httprobe && \
     cd httprobe && go get && go build && mv httprobe /executables
+RUN git clone --depth=1 https://github.com/BishopFox/cloudfox && \
+    cd cloudfox && go get && go build && mv cloudfox /executables
 
 FROM rust AS noseyparker_builder
 RUN mkdir /executables && \
@@ -75,6 +74,5 @@ FROM alpine
 RUN mkdir /executables && mkdir /debs
 COPY --from=go_builder /executables/* /executables/
 COPY --from=projectdiscovery_builder /executables/* /executables/
-COPY --from=hakluke_builder /executables/* /executables/
-COPY --from=tomnomnom_builder /executables/* /executables/
+COPY --from=other_builder /executables/* /executables/
 COPY --from=noseyparker_builder /executables/* /executables/
