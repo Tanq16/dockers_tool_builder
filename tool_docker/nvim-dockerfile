@@ -5,4 +5,4 @@ RUN mkdir /debs && apt update -y && apt upgrade -y && \
     tar -xvf stable.tar.gz && \
     cd neovim-stable && make CMAKE_BUILD_TYPE=RelWithDebInfo && \
     cd build && cpack -G DEB
-RUN mv neovim/build/nvim-linux64.deb /
+RUN mv neovim-stable/build/nvim-linux64.deb /
